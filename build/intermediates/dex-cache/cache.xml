@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        jar="D:\Android\Project\Airi\app\libs\gson-2.2.4.jar"
+        jumboMode="false"
+        revision="21.1.1"
+        sha1="973e832af433b44c3ed11c426f2f390b29f3f3f8">
+        <dex dex="D:\Android\Project\Airi\app\build\intermediates\pre-dexed\debug\gson-2.2.4-dc438e958a2f363804b2625bbb3a168e8c9288af.jar" />
+    </item>
+    <item
+        jar="D:\Android\Project\Airi\app\build\intermediates\exploded-aar\com.android.support\support-v4\21.0.3\classes.jar"
+        jumboMode="false"
+        revision="21.1.1"
+        sha1="2c91c949a45a21cdecf26e03951e46c7beec9ad8">
+        <dex dex="D:\Android\Project\Airi\app\build\intermediates\pre-dexed\debug\classes-afe6dbdeedaa031c7fb898288bac83f09743bde3.jar" />
+    </item>
+    <item
+        jar="D:\Android\Project\Airi\app\build\intermediates\exploded-aar\com.android.support\support-v4\21.0.3\libs\internal_impl-21.0.3.jar"
+        jumboMode="false"
+        revision="21.1.1"
+        sha1="01ec05bfbafcc07646ba813000bf2ef11742dd03">
+        <dex dex="D:\Android\Project\Airi\app\build\intermediates\pre-dexed\debug\internal_impl-21.0.3-3f0a67de4136c7fa27ae255b3e13279ac27c8af4.jar" />
+    </item>
+    <item
+        jar="D:\Android\Project\Airi\app\libs\android-async-http-1.4.5.jar"
+        jumboMode="false"
+        revision="21.1.1"
+        sha1="77bf7cacf9cefe19dc105e5425d2eb1bb5285881">
+        <dex dex="D:\Android\Project\Airi\app\build\intermediates\pre-dexed\debug\android-async-http-1.4.5-c1c5989869159c5d6976406e6f543bbce53c13d6.jar" />
+    </item>
+    <item
+        jar="D:\Develop\adt-bundle-windows-x86_64-20140702\sdk\extras\android\m2repository\com\android\support\support-annotations\21.0.3\support-annotations-21.0.3.jar"
+        jumboMode="false"
+        revision="21.1.1"
+        sha1="4b74cefe1f0c1b819e7260c8627a14674e37fd35">
+        <dex dex="D:\Android\Project\Airi\app\build\intermediates\pre-dexed\debug\support-annotations-21.0.3-3a6974a0d8f3b14f9ea2698033dcf43eb1ac7ae4.jar" />
+    </item>
+    <item
+        jar="D:\Android\Project\Airi\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\21.0.3\classes.jar"
+        jumboMode="false"
+        revision="21.1.1"
+        sha1="81d42bf983a8741f4888a6e333e454e4a5e0eeb7">
+        <dex dex="D:\Android\Project\Airi\app\build\intermediates\pre-dexed\debug\classes-464fd6055d2d349ba5ec97c179c7890e278b46e9.jar" />
+    </item>
+
+</items>
