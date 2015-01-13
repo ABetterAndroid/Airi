@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="aqi_red">#FE3B30</color>
+    <color name="aqi_green">#3DCE56</color>
+    <color name="aqi_yellow">#BFCE3D</color>
+    <color name="dark_white">#B1B5BE</color>
+    <color name="white">#FFFFFF</color>
+
+</resources>

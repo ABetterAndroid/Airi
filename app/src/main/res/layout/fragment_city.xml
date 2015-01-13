@@ -1,13 +1,56 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/page"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.joe.airi.ui.home.CityFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/test" />
+        android:id="@+id/background"
+        android:src="@drawable/scene1"
+        android:scaleType="centerCrop"/>
 
-</FrameLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/city"
+        android:textSize="18sp"
+        android:layout_margin="20dp"
+        android:text="TEST"
+        android:textColor="@color/white"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="80dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/aqi"
+            android:textSize="70sp"
+            android:layout_marginRight="30dp"
+            android:text="TEST"
+            android:textColor="@color/white"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/quality"
+            android:layout_marginTop="10dp"
+            android:textSize="14sp"
+            android:text="TEST"
+            android:textColor="@color/white"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:background="@drawable/shape_aqi_green"/>
+
+    </LinearLayout>
+
+</RelativeLayout>

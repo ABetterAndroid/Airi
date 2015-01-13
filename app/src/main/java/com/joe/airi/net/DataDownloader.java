@@ -24,7 +24,7 @@ public class DataDownloader {
         this.context=context;
     }
 
-    public void getPMata(String city, final DataOKCallback mCallBack) {
+    public void getPMData(String city, final DataOKCallback mCallBack) {
 
         if (!Util.isNetworkConnected(context)){
             mCallBack.onDataOK(new Result<PM2_5>(null, Result.NETWORK_INVALID));

@@ -1,5 +1,7 @@
 package com.joe.airi.ui.home;
 
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -8,6 +10,7 @@ import android.view.MenuItem;
 
 import com.joe.airi.R;
 import com.joe.airi.adapter.HomePagerAdapter;
+import com.joe.airi.common.PersonalizedPageTransformer;
 import com.joe.airi.ui.base.BaseActivity;
 
 import java.util.ArrayList;
@@ -23,7 +26,11 @@ public class MainActivity extends BaseActivity {
         ViewPager vpHome=$(R.id.home_vp);
         List<Fragment> fragmentList = new ArrayList<Fragment>();
         fragmentList.add(CityFragment.newInstance("", ""));
+        fragmentList.add(CityFragment.newInstance("", ""));
+        vpHome.setPageMargin(6);
+        vpHome.setPageMarginDrawable(new ColorDrawable(Color.BLACK));
         vpHome.setAdapter(new HomePagerAdapter(getSupportFragmentManager(), fragmentList));
+        vpHome.setPageTransformer(false, new PersonalizedPageTransformer.ParallaxPageTransformer());
 
     }
 

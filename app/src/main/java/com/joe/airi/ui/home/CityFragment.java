@@ -2,12 +2,16 @@ package com.joe.airi.ui.home;
 
 
 import android.app.Fragment;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.enrique.stackblur.StackBlurManager;
 import com.joe.airi.R;
 import com.joe.airi.callback.DataOKCallback;
 import com.joe.airi.model.PM2_5;
@@ -31,7 +35,9 @@ public class CityFragment extends BaseFragment implements DataOKCallback {
     private String mParam1;
     private String mParam2;
     private View view;
-    private TextView tv;
+    private TextView tvCity;
+    private TextView tvAQI;
+    private TextView tvQuality;
 
 
     /**
@@ -76,8 +82,16 @@ public class CityFragment extends BaseFragment implements DataOKCallback {
             return view;
         }
         view = inflater.inflate(R.layout.fragment_city, container, false);
-        tv = $(view, R.id.test);
-        new DataDownloader(getActivity()).getPMata("北京", this);
+        tvCity = $(view, R.id.city);
+        tvAQI = $(view, R.id.aqi);
+        tvQuality = $(view, R.id.quality);
+        ImageView ivBackground=$(view, R.id.background);
+        Bitmap bitmap= BitmapFactory.decodeResource(getResources(), R.drawable.scene1);
+        StackBlurManager stackBlurManager = new StackBlurManager(bitmap);
+        ivBackground.setImageBitmap(stackBlurManager.processRenderScript(getActivity(), 50));
+
+
+        new DataDownloader(getActivity()).getPMData("北京", this);
 
         return view;
     }
@@ -93,7 +107,17 @@ public class CityFragment extends BaseFragment implements DataOKCallback {
         switch (mResult.getErrorCode()) {
             case Result.OK:
                 PM2_5 pm2_5=mResult.getResult();
-                tv.setText(pm2_5.getCity());
+                tvCity.setText(pm2_5.getCity());
+                tvAQI.setText(pm2_5.getAQI());
+                int aqi = Integer.valueOf(pm2_5.getAQI());
+                if (aqi < 50) {
+                    tvQuality.setBackgroundResource(R.drawable.shape_aqi_green);
+                }else if (aqi < 100) {
+                    tvQuality.setBackgroundResource(R.drawable.shape_aqi_yellow);
+                } else {
+                    tvQuality.setBackgroundResource(R.drawable.shape_aqi_red);
+                }
+                tvQuality.setText(pm2_5.getQuality());
 
                 break;
             case Result.NETWORK_INVALID:
