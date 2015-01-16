@@ -3,15 +3,16 @@ package com.joe.airi.net;
 import android.content.Context;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.joe.airi.callback.DataOKCallback;
-import com.joe.airi.model.PM2_5;
+import com.joe.airi.model.DataResult;
+import com.joe.airi.model.pm2_5.PM2_5;
+import com.joe.airi.model.aqi.AQI;
 import com.joe.airi.utils.Constants;
-import com.joe.airi.utils.Util;
-import com.loopj.android.http.BaseJsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
-
-import org.apache.http.Header;
-import org.json.JSONObject;
+import com.joe.airi.utils.Utils;
+import com.thinkland.sdk.android.DataCallBack;
+import com.thinkland.sdk.android.JuheData;
+import com.thinkland.sdk.android.Parameters;
 
 /**
  * Created by qiaorongzhu on 2015/1/13.
@@ -26,13 +27,24 @@ public class DataDownloader {
 
     public void getPMData(String city, final DataOKCallback mCallBack) {
 
-        if (!Util.isNetworkConnected(context)){
-            mCallBack.onDataOK(new Result<PM2_5>(null, Result.NETWORK_INVALID));
+        if (!Utils.isNetworkConnected(context)){
+            mCallBack.onDataOK(new DataResult<PM2_5>(null, DataResult.NETWORK_INVALID));
             return;
         }
-        RequestParams params = new RequestParams();
-        params.put("city", city);
-        params.put("key", Constants.APP_KEY);
+
+        Parameters params=new Parameters();
+        params.add("city", city);
+        JuheData.executeWithAPI(Constants.API_ID_AQI, Constants.URL_PM2_5, JuheData.GET, params, new DataCallBack() {
+            @Override
+            public void resultLoaded(int i, String s, String s2) {
+                DataResult<PM2_5> dataResult = new Gson().fromJson(s2, new TypeToken<DataResult<PM2_5>>() {
+                }.getType());
+                dataResult.setResultType(Constants.RESULT_TYPE_PM2_5);
+                mCallBack.onDataOK(dataResult);
+
+            }
+        });
+        /*RequestParams params = new RequestParams();
         HttpUtil.get(context, Constants.URL_PM2_5, params, new BaseJsonHttpResponseHandler<PM2_5>() {
 
             Result<PM2_5> mResult;
@@ -66,6 +78,35 @@ public class DataDownloader {
                     PM2_5 pm2_5=gson.fromJson(jsonStr, PM2_5.class);
                     return pm2_5;
                 }
+            }
+        });*/
+
+    }
+
+
+    /**
+     * 获取空气质量数据
+     * @param city
+     * @param mCallBack
+     */
+    public void getAQIData(String city, final DataOKCallback mCallBack) {
+
+        if (!Utils.isNetworkConnected(context)){
+            mCallBack.onDataOK(new DataResult<AQI>(null, DataResult.NETWORK_INVALID));
+            return;
+        }
+
+        Parameters params=new Parameters();
+        params.add("city", city);
+        JuheData.executeWithAPI(Constants.API_ID_AQI, Constants.URL_AQI, JuheData.GET, params, new DataCallBack() {
+
+            @Override
+            public void resultLoaded(int i, String s, String s2) {
+                DataResult<AQI> dataResult = new Gson().fromJson(s2, new TypeToken<DataResult<AQI>>() {
+                }.getType());
+                dataResult.setResultType(Constants.RESULT_TYPE_AQI);
+                mCallBack.onDataOK(dataResult);
+
             }
         });
 

@@ -2,7 +2,7 @@ package com.joe.airi.net;
 
 import android.content.Context;
 
-import com.joe.airi.model.PM2_5;
+import com.joe.airi.model.pm2_5.PM2_5;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.BaseJsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;

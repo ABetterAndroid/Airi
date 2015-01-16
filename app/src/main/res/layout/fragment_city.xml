@@ -18,7 +18,6 @@
         android:id="@+id/city"
         android:textSize="18sp"
         android:layout_margin="20dp"
-        android:text="TEST"
         android:textColor="@color/white"/>
 
     <LinearLayout
@@ -34,7 +33,6 @@
             android:id="@+id/aqi"
             android:textSize="70sp"
             android:layout_marginRight="30dp"
-            android:text="TEST"
             android:textColor="@color/white"/>
 
         <TextView
@@ -43,14 +41,21 @@
             android:id="@+id/quality"
             android:layout_marginTop="10dp"
             android:textSize="14sp"
-            android:text="TEST"
             android:textColor="@color/white"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:paddingTop="3dp"
+            android:paddingBottom="3dp"
             android:background="@drawable/shape_aqi_green"/>
 
     </LinearLayout>
+
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/chart"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="10dp"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"/>
 
 </RelativeLayout>

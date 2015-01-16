@@ -4,12 +4,22 @@
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
 
     <application
+        android:name=".ui.application.AiriApplication"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
+
+        <meta-data
+            android:name="com.thinkland.juheapi.openid"
+            android:value="JHb72b5c518906efdaa2b79a2eb7dda563"/>
+
         <activity
             android:name=".ui.home.MainActivity"
             android:label="@string/app_name" >

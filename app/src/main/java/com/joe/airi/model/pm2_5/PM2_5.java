@@ -1,4 +1,6 @@
-package com.joe.airi.model;
+package com.joe.airi.model.pm2_5;
+
+import com.google.gson.annotations.SerializedName;
 
 /**
  * Created by qiaorongzhu on 2015/1/12.
@@ -6,6 +8,8 @@ package com.joe.airi.model;
 public class PM2_5 {
 
     String city;
+    //将java对象的属性转换成指定的json名字
+    @SerializedName("PM2.5")
     String PM2_5;
     String AQI;
     String quality;

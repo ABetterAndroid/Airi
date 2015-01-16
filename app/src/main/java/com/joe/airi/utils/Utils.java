@@ -8,7 +8,7 @@ import android.widget.Toast;
 /**
  * Created by qiaorongzhu on 2015/1/13.
  */
-public class Util {
+public class Utils {
     /**
      * 判断网络连接
      * @return
@@ -29,4 +29,5 @@ public class Util {
         Toast.makeText(context, toastString, Toast.LENGTH_SHORT).show();
 
     }
+
 }
