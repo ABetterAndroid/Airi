@@ -5,6 +5,7 @@ import android.app.Fragment;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,13 +24,14 @@ import com.github.mikephil.charting.utils.YLabels;
 import com.joe.airi.R;
 import com.joe.airi.callback.DataOKCallback;
 import com.joe.airi.model.DataResult;
-import com.joe.airi.model.pm2_5.PM2_5;
 import com.joe.airi.model.aqi.AQI;
 import com.joe.airi.model.aqi.Last;
+import com.joe.airi.model.pm2_5.PM2_5;
 import com.joe.airi.net.DataDownloader;
 import com.joe.airi.ui.base.BaseFragment;
 import com.joe.airi.utils.Constants;
 import com.joe.airi.utils.Utils;
+import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 
 import java.util.ArrayList;
 
@@ -52,6 +54,10 @@ public class CityFragment extends BaseFragment implements DataOKCallback {
     private TextView tvAQI;
     private TextView tvQuality;
     private LineChart mChart;
+    private DataDownloader downloader;
+    private int retryTimesPM;
+    private int retryTimesAQI;
+    private ImageView ivBackground;
 
 
     /**
@@ -90,7 +96,7 @@ public class CityFragment extends BaseFragment implements DataOKCallback {
                              Bundle savedInstanceState) {
         if (view != null) {
             ViewGroup parent = (ViewGroup) view.getParent();
-            if (parent != null ) {
+            if (parent != null) {
                 parent.removeView(view);
             }
             return view;
@@ -99,26 +105,45 @@ public class CityFragment extends BaseFragment implements DataOKCallback {
         tvCity = $(view, R.id.city);
         tvAQI = $(view, R.id.aqi);
         tvQuality = $(view, R.id.quality);
-        ImageView ivBackground=$(view, R.id.background);
-        Bitmap bitmap= BitmapFactory.decodeResource(getResources(), R.drawable.scene1);
-        StackBlurManager stackBlurManager = new StackBlurManager(bitmap);
-        ivBackground.setImageBitmap(stackBlurManager.processRenderScript(getActivity(), 50));
+        ivBackground = $(view, R.id.background);
+
+        blurBackground();
 
         mChart = $(view, R.id.chart);
 
-        DataDownloader downloader = new DataDownloader(getActivity());
+        downloader = new DataDownloader(getActivity());
         downloader.getPMData("北京", this);
         downloader.getAQIData("北京", this);
 
         return view;
     }
 
+    private void blurBackground() {
+        new AsyncTask<Void, Void, Void>() {
+            private Bitmap blurBmp;
+
+            @Override
+            protected Void doInBackground(Void... params) {
+                Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.scene1);
+                StackBlurManager stackBlurManager = new StackBlurManager(bitmap);
+                blurBmp = stackBlurManager.processRenderScript(getActivity(), 50);
+
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                ivBackground.setImageBitmap(blurBmp);
+                FadeInBitmapDisplayer.animate(ivBackground,2000);
+            }
+        }.execute();
+    }
+
 
     private void setupChart(LineChart chart, LineData data, int color) {
 
-        chart.setAlpha(0f);
-        chart.animate().alpha(1.0f).setDuration(500).start();
-        chart.setVisibility(View.VISIBLE);
+        Utils.fadeInVisible(chart);
 
         // if enabled, the chart will always start at zero on the y-axis
         chart.setStartAtZero(true);
@@ -213,84 +238,14 @@ public class CityFragment extends BaseFragment implements DataOKCallback {
         switch (mResult.getError_code()) {
             case DataResult.OK:
 
-                switch (mResult.getResultType()){
+                switch (mResult.getResultType()) {
                     case Constants.RESULT_TYPE_PM2_5:
-                        PM2_5 pm2_5 = (PM2_5) mResult.getResult().get(0);
-                        tvCity.setText(pm2_5.getCity());
-                        tvAQI.setText(pm2_5.getAQI());
-                        int aqi = Integer.valueOf(pm2_5.getAQI());
-                        if (aqi < 50) {
-                            tvQuality.setBackgroundResource(R.drawable.shape_aqi_green);
-                        } else if (aqi < 100) {
-                            tvQuality.setBackgroundResource(R.drawable.shape_aqi_yellow);
-                        } else {
-                            tvQuality.setBackgroundResource(R.drawable.shape_aqi_red);
-                        }
-                        tvQuality.setText(pm2_5.getQuality());
+                        fillPMData(mResult);
+                        retryTimesPM = 0;
                         break;
                     case Constants.RESULT_TYPE_AQI:
-                        AQI aqiData= (AQI) mResult.getResult().get(0);
-                        Last last=aqiData.getLastTwoWeeks();
-                        ArrayList<String> xVals = new ArrayList<String>();
-                        xVals.add(last.getLast1().getDate().substring(5));
-                        xVals.add(last.getLast2().getDate().substring(5));
-                        xVals.add(last.getLast3().getDate().substring(5));
-                        xVals.add(last.getLast4().getDate().substring(5));
-                        xVals.add(last.getLast5().getDate().substring(5));
-                        xVals.add(last.getLast6().getDate().substring(5));
-                        xVals.add(last.getLast7().getDate().substring(5));
-                        xVals.add(last.getLast8().getDate().substring(5));
-                        xVals.add(last.getLast9().getDate().substring(5));
-                        xVals.add(last.getLast10().getDate().substring(5));
-                        xVals.add(last.getLast11().getDate().substring(5));
-                        xVals.add(last.getLast12().getDate().substring(5));
-                        xVals.add(last.getLast13().getDate().substring(5));
-                        xVals.add(last.getLast14().getDate().substring(5));
-                        xVals.add(last.getLast15().getDate().substring(5));
-                        xVals.add(last.getLast16().getDate().substring(5));
-                        xVals.add(last.getLast17().getDate().substring(5));
-                        xVals.add(last.getLast18().getDate().substring(5));
-                        xVals.add(last.getLast19().getDate().substring(5));
-                        xVals.add(last.getLast20().getDate().substring(5));
-                        xVals.add(last.getLast21().getDate().substring(5));
-                        xVals.add(last.getLast22().getDate().substring(5));
-                        xVals.add(last.getLast23().getDate().substring(5));
-                        xVals.add(last.getLast24().getDate().substring(5));
-                        xVals.add(last.getLast25().getDate().substring(5));
-                        xVals.add(last.getLast26().getDate().substring(5));
-                        xVals.add(last.getLast27().getDate().substring(5));
-
-                        ArrayList<Entry> yVals = new ArrayList<Entry>();
-
-                        yVals.add(new Entry(Float.valueOf(last.getLast1().getAQI()), 0));
-                        yVals.add(new Entry(Float.valueOf(last.getLast2().getAQI()), 1));
-                        yVals.add(new Entry(Float.valueOf(last.getLast3().getAQI()), 2));
-                        yVals.add(new Entry(Float.valueOf(last.getLast4().getAQI()), 3));
-                        yVals.add(new Entry(Float.valueOf(last.getLast5().getAQI()), 4));
-                        yVals.add(new Entry(Float.valueOf(last.getLast6().getAQI()), 5));
-                        yVals.add(new Entry(Float.valueOf(last.getLast7().getAQI()), 6));
-                        yVals.add(new Entry(Float.valueOf(last.getLast8().getAQI()), 7));
-                        yVals.add(new Entry(Float.valueOf(last.getLast9().getAQI()), 8));
-                        yVals.add(new Entry(Float.valueOf(last.getLast10().getAQI()), 9));
-                        yVals.add(new Entry(Float.valueOf(last.getLast11().getAQI()), 10));
-                        yVals.add(new Entry(Float.valueOf(last.getLast12().getAQI()), 11));
-                        yVals.add(new Entry(Float.valueOf(last.getLast13().getAQI()), 12));
-                        yVals.add(new Entry(Float.valueOf(last.getLast14().getAQI()), 13));
-                        yVals.add(new Entry(Float.valueOf(last.getLast15().getAQI()), 14));
-                        yVals.add(new Entry(Float.valueOf(last.getLast16().getAQI()), 15));
-                        yVals.add(new Entry(Float.valueOf(last.getLast17().getAQI()), 16));
-                        yVals.add(new Entry(Float.valueOf(last.getLast18().getAQI()), 17));
-                        yVals.add(new Entry(Float.valueOf(last.getLast19().getAQI()), 18));
-                        yVals.add(new Entry(Float.valueOf(last.getLast20().getAQI()), 19));
-                        yVals.add(new Entry(Float.valueOf(last.getLast21().getAQI()), 20));
-                        yVals.add(new Entry(Float.valueOf(last.getLast22().getAQI()), 21));
-                        yVals.add(new Entry(Float.valueOf(last.getLast23().getAQI()), 22));
-                        yVals.add(new Entry(Float.valueOf(last.getLast24().getAQI()), 23));
-                        yVals.add(new Entry(Float.valueOf(last.getLast25().getAQI()), 24));
-                        yVals.add(new Entry(Float.valueOf(last.getLast26().getAQI()), 25));
-                        yVals.add(new Entry(Float.valueOf(last.getLast27().getAQI()), 26));
-
-                        setupChart(mChart, getData(xVals, yVals), Color.TRANSPARENT);
+                        fillChartData(mResult);
+                        retryTimesAQI = 0;
                         break;
                 }
                 break;
@@ -298,9 +253,113 @@ public class CityFragment extends BaseFragment implements DataOKCallback {
                 Utils.showToast(getActivity(), "无网络连接...");
                 break;
             default:
-                Utils.showToast(getActivity(), "获取数据错误...");
+                switch (mResult.getResultType()) {
+                    case Constants.RESULT_TYPE_PM2_5:
+                        if (retryTimesPM < 3) {
+
+                            downloader.getPMData("北京", this);
+                            retryTimesPM += 1;
+                        } else {
+                            Utils.showToast(getActivity(), "获取数据错误...");
+                            retryTimesPM = 0;
+                        }
+                        break;
+                    case Constants.RESULT_TYPE_AQI:
+                        if (retryTimesAQI < 3) {
+
+                            downloader.getAQIData("北京", this);
+                            retryTimesAQI += 1;
+                        } else {
+                            Utils.showToast(getActivity(), "获取数据错误...");
+                            retryTimesAQI = 0;
+                        }
+                        break;
+                }
+
+
                 break;
         }
 
+    }
+
+    private void fillPMData(DataResult mResult) {
+        PM2_5 pm2_5 = (PM2_5) mResult.getResult().get(0);
+        tvCity.setText(pm2_5.getCity());
+        tvAQI.setText(pm2_5.getAQI());
+        int aqi = Integer.valueOf(pm2_5.getAQI());
+        if (aqi < 50) {
+            tvQuality.setBackgroundResource(R.drawable.shape_aqi_green);
+        } else if (aqi < 100) {
+            tvQuality.setBackgroundResource(R.drawable.shape_aqi_yellow);
+        } else {
+            tvQuality.setBackgroundResource(R.drawable.shape_aqi_red);
+        }
+        tvQuality.setText(pm2_5.getQuality());
+        Utils.fadeInVisible(tvQuality);
+    }
+
+    private void fillChartData(DataResult mResult) {
+        AQI aqiData = (AQI) mResult.getResult().get(0);
+        Last last = aqiData.getLastTwoWeeks();
+        ArrayList<String> xVals = new ArrayList<String>();
+        xVals.add(last.getLast1().getDate().substring(5));
+        xVals.add(last.getLast2().getDate().substring(5));
+        xVals.add(last.getLast3().getDate().substring(5));
+        xVals.add(last.getLast4().getDate().substring(5));
+        xVals.add(last.getLast5().getDate().substring(5));
+        xVals.add(last.getLast6().getDate().substring(5));
+        xVals.add(last.getLast7().getDate().substring(5));
+        xVals.add(last.getLast8().getDate().substring(5));
+        xVals.add(last.getLast9().getDate().substring(5));
+        xVals.add(last.getLast10().getDate().substring(5));
+        xVals.add(last.getLast11().getDate().substring(5));
+        xVals.add(last.getLast12().getDate().substring(5));
+        xVals.add(last.getLast13().getDate().substring(5));
+        xVals.add(last.getLast14().getDate().substring(5));
+        xVals.add(last.getLast15().getDate().substring(5));
+        xVals.add(last.getLast16().getDate().substring(5));
+        xVals.add(last.getLast17().getDate().substring(5));
+        xVals.add(last.getLast18().getDate().substring(5));
+        xVals.add(last.getLast19().getDate().substring(5));
+        xVals.add(last.getLast20().getDate().substring(5));
+        xVals.add(last.getLast21().getDate().substring(5));
+        xVals.add(last.getLast22().getDate().substring(5));
+        xVals.add(last.getLast23().getDate().substring(5));
+        xVals.add(last.getLast24().getDate().substring(5));
+        xVals.add(last.getLast25().getDate().substring(5));
+        xVals.add(last.getLast26().getDate().substring(5));
+        xVals.add(last.getLast27().getDate().substring(5));
+
+        ArrayList<Entry> yVals = new ArrayList<Entry>();
+
+        yVals.add(new Entry(Float.valueOf(last.getLast1().getAQI()), 0));
+        yVals.add(new Entry(Float.valueOf(last.getLast2().getAQI()), 1));
+        yVals.add(new Entry(Float.valueOf(last.getLast3().getAQI()), 2));
+        yVals.add(new Entry(Float.valueOf(last.getLast4().getAQI()), 3));
+        yVals.add(new Entry(Float.valueOf(last.getLast5().getAQI()), 4));
+        yVals.add(new Entry(Float.valueOf(last.getLast6().getAQI()), 5));
+        yVals.add(new Entry(Float.valueOf(last.getLast7().getAQI()), 6));
+        yVals.add(new Entry(Float.valueOf(last.getLast8().getAQI()), 7));
+        yVals.add(new Entry(Float.valueOf(last.getLast9().getAQI()), 8));
+        yVals.add(new Entry(Float.valueOf(last.getLast10().getAQI()), 9));
+        yVals.add(new Entry(Float.valueOf(last.getLast11().getAQI()), 10));
+        yVals.add(new Entry(Float.valueOf(last.getLast12().getAQI()), 11));
+        yVals.add(new Entry(Float.valueOf(last.getLast13().getAQI()), 12));
+        yVals.add(new Entry(Float.valueOf(last.getLast14().getAQI()), 13));
+        yVals.add(new Entry(Float.valueOf(last.getLast15().getAQI()), 14));
+        yVals.add(new Entry(Float.valueOf(last.getLast16().getAQI()), 15));
+        yVals.add(new Entry(Float.valueOf(last.getLast17().getAQI()), 16));
+        yVals.add(new Entry(Float.valueOf(last.getLast18().getAQI()), 17));
+        yVals.add(new Entry(Float.valueOf(last.getLast19().getAQI()), 18));
+        yVals.add(new Entry(Float.valueOf(last.getLast20().getAQI()), 19));
+        yVals.add(new Entry(Float.valueOf(last.getLast21().getAQI()), 20));
+        yVals.add(new Entry(Float.valueOf(last.getLast22().getAQI()), 21));
+        yVals.add(new Entry(Float.valueOf(last.getLast23().getAQI()), 22));
+        yVals.add(new Entry(Float.valueOf(last.getLast24().getAQI()), 23));
+        yVals.add(new Entry(Float.valueOf(last.getLast25().getAQI()), 24));
+        yVals.add(new Entry(Float.valueOf(last.getLast26().getAQI()), 25));
+        yVals.add(new Entry(Float.valueOf(last.getLast27().getAQI()), 26));
+
+        setupChart(mChart, getData(xVals, yVals), Color.TRANSPARENT);
     }
 }

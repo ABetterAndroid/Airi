@@ -3,6 +3,7 @@ package com.joe.airi.utils;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.view.View;
 import android.widget.Toast;
 
 /**
@@ -28,6 +29,16 @@ public class Utils {
 
         Toast.makeText(context, toastString, Toast.LENGTH_SHORT).show();
 
+    }
+
+    /**
+     * fade in
+     * @param view
+     */
+    public static void fadeInVisible(View view) {
+        view.setAlpha(0f);
+        view.animate().alpha(1.0f).setDuration(800).start();
+        view.setVisibility(View.VISIBLE);
     }
 
 }

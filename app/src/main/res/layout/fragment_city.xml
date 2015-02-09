@@ -17,7 +17,8 @@
         android:layout_height="wrap_content"
         android:id="@+id/city"
         android:textSize="18sp"
-        android:layout_margin="20dp"
+        android:layout_marginTop="60dp"
+        android:layout_marginLeft="20dp"
         android:textColor="@color/white"/>
 
     <LinearLayout
@@ -46,6 +47,7 @@
             android:paddingRight="20dp"
             android:paddingTop="3dp"
             android:paddingBottom="3dp"
+            android:visibility="invisible"
             android:background="@drawable/shape_aqi_green"/>
 
     </LinearLayout>
